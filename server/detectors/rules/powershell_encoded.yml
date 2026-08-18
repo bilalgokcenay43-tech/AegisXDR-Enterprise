@@ -1,0 +1,21 @@
+title: Encoded PowerShell Command Execution
+id: SIGMA-AEGIS-001
+status: test
+description: Detects execution of PowerShell with Base64 encoded payload flags (-enc, -encodedcommand).
+level: high
+tags:
+  - attack.execution
+  - attack.t1059.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - powershell.exe
+      - pwsh.exe
+    CommandLine|contains:
+      - -enc
+      - -encodedcommand
+      - -w hidden
+  condition: selection

@@ -1,0 +1,22 @@
+title: Microsoft Office Spawning Command Shell
+id: SIGMA-AEGIS-002
+status: stable
+description: Detects Microsoft Word or Excel spawning cmd.exe or powershell.exe, typical of malicious macro execution.
+level: critical
+tags:
+  - attack.phishing
+  - attack.t1566
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    ParentImage|endswith:
+      - winword.exe
+      - excel.exe
+      - powerpnt.exe
+    Image|endswith:
+      - cmd.exe
+      - powershell.exe
+      - wscript.exe
+  condition: selection

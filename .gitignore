@@ -1,0 +1,30 @@
+# Python & Bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual Environments
+venv/
+.venv/
+env/
+.env
+
+# Database & SQLite files
+*.db
+*.sqlite3
+aegis_xdr.db
+
+# Logs & Dumps
+*.log
+dumps/
+*.dmp
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

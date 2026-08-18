@@ -1,0 +1,8 @@
+{
+  "agent_id": "AEGIS-AGENT-WIN-01",
+  "server_url": "http://127.0.0.1:8000/api/v1/telemetry",
+  "aes_key_b64": "QWVnaXNYRFJfU2VjdXJlX0FFUzI1Nl9LZXlfMzJCIQ==",
+  "use_encryption": true,
+  "poll_interval_seconds": 3,
+  "monitored_executables": ["powershell.exe", "cmd.exe", "winword.exe", "excel.exe", "wscript.exe", "certutil.exe", "rundll32.exe"]
+}

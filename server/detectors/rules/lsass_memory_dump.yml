@@ -1,0 +1,18 @@
+title: LSASS Memory Dumping via Rundll32 or Comsvcs
+id: SIGMA-AEGIS-003
+status: stable
+description: Detects command lines attempting to dump LSASS process memory using comsvcs.dll or rundll32.
+level: critical
+tags:
+  - attack.credential_access
+  - attack.t1003.001
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    CommandLine|contains:
+      - comsvcs.dll
+      - MiniDump
+      - lsass
+  condition: selection

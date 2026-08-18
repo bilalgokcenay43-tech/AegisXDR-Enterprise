@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AegisXDR Enterprise SOC Command Center</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="min-h-screen text-slate-100 flex flex-col">
+
+    <!-- Top Navigation Header -->
+    <header class="border-b border-slate-800/80 bg-slate-950/80 backdrop-blur sticky top-0 z-50 px-6 py-3.5 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-lg bg-blue-600/20 border border-blue-500/40 flex items-center justify-center text-blue-400 font-bold shadow-lg shadow-blue-500/10">
+                <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <div class="flex items-center space-x-2">
+                    <h1 class="font-bold text-lg text-white tracking-wide">AegisXDR</h1>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-cyan-950 text-cyan-400 border border-cyan-800">Production v2.0</span>
+                </div>
+                <p class="text-xs text-slate-400">Hybrid SIEM / XDR Threat Detection, Memory Forensics & Secure SOAR Engine</p>
+            </div>
+        </div>
+
+        <!-- Quick SOAR Actions Header Controls -->
+        <div class="flex items-center space-x-3">
+            <button id="btn-simulate-attack" class="px-3.5 py-1.5 rounded-lg bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/40 text-xs font-semibold flex items-center transition-all shadow-sm">
+                <i data-lucide="zap" class="w-4 h-4 mr-1.5"></i>Simulate Attack
+            </button>
+            <button id="btn-manual-isolate" class="px-3.5 py-1.5 rounded-lg bg-amber-600/20 hover:bg-amber-600/30 text-amber-400 border border-amber-500/40 text-xs font-semibold flex items-center transition-all">
+                <i data-lucide="wifi-off" class="w-4 h-4 mr-1.5"></i>Isolate Host
+            </button>
+            <button id="btn-manual-kill" class="px-3.5 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 text-xs font-semibold flex items-center transition-all">
+                <i data-lucide="skull" class="w-4 h-4 mr-1.5"></i>Kill Process
+            </button>
+            <div class="h-5 w-px bg-slate-800"></div>
+            <div class="flex items-center space-x-2 text-xs text-emerald-400 bg-emerald-950/40 px-3 py-1.5 rounded-lg border border-emerald-800/40">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span class="font-mono font-medium">SOAR GUARDRAILS ACTIVE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 p-6 space-y-6 max-w-[1700px] mx-auto w-full">
+
+        <!-- Metrics Overview Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            
+            <!-- Metric 1: Telemetry Events -->
+            <div class="glass-panel rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">Process Telemetry</span>
+                    <div id="stat-total-events" class="text-2xl font-bold text-white mono mt-1">0</div>
+                    <span class="text-[11px] text-cyan-400 flex items-center mt-1">
+                        <i data-lucide="lock" class="w-3 h-3 mr-1"></i>Sysmon & AES-256 Ingested
+                    </span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-cyan-950/60 border border-cyan-800/40 flex items-center justify-center text-cyan-400">
+                    <i data-lucide="activity" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <!-- Metric 2: Total Alerts -->
+            <div class="glass-panel rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">SIEM Correlated Alerts</span>
+                    <div id="stat-total-alerts" class="text-2xl font-bold text-white mono mt-1">0</div>
+                    <span class="text-[11px] text-slate-400 mt-1 block">SIGMA & FP Filtered Rules</span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-950/60 border border-blue-800/40 flex items-center justify-center text-blue-400">
+                    <i data-lucide="bell" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <!-- Metric 3: Critical Threat Count -->
+            <div class="glass-panel glass-panel-glow rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-red-400 uppercase tracking-wider">Critical Threats</span>
+                    <div id="stat-critical-alerts" class="text-2xl font-bold text-red-400 mono mt-1">0</div>
+                    <span class="text-[11px] text-red-400/80 flex items-center mt-1">
+                        <i data-lucide="alert-triangle" class="w-3 h-3 mr-1"></i>LSASS & Privilege Threats
+                    </span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-red-950/60 border border-red-800/40 flex items-center justify-center text-red-400">
+                    <i data-lucide="shield-alert" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+            <!-- Metric 4: SOAR Executed -->
+            <div class="glass-panel rounded-xl p-4 flex items-center justify-between">
+                <div>
+                    <span class="text-xs font-medium text-slate-400 uppercase tracking-wider">SOAR Mitigations</span>
+                    <div id="stat-soar-actions" class="text-2xl font-bold text-emerald-400 mono mt-1">0</div>
+                    <span class="text-[11px] text-emerald-400 flex items-center mt-1">
+                        <i data-lucide="check-circle" class="w-3 h-3 mr-1"></i>Auto & Approved Actions
+                    </span>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-emerald-950/60 border border-emerald-800/40 flex items-center justify-center text-emerald-400">
+                    <i data-lucide="cpu" class="w-6 h-6"></i>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Middle Row: Analytics Charts & Live Telemetry Stream -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            
+            <!-- Severity Distribution Doughnut Chart -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-sm text-slate-200 flex items-center">
+                        <i data-lucide="pie-chart" class="w-4 h-4 mr-2 text-blue-400"></i>Threat Severity Distribution
+                    </h3>
+                </div>
+                <div class="relative flex-1 min-h-[200px] flex items-center justify-center">
+                    <canvas id="alertSeverityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Telemetry Ingestion Rate Line Chart -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-semibold text-sm text-slate-200 flex items-center">
+                        <i data-lucide="line-chart" class="w-4 h-4 mr-2 text-cyan-400"></i>Ingestion Stream Rate
+                    </h3>
+                    <span class="text-[11px] text-cyan-400 font-mono">Live Sync</span>
+                </div>
+                <div class="relative flex-1 min-h-[200px]">
+                    <canvas id="telemetryTimelineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Live Telemetry Stream Feed -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-sm text-slate-200 flex items-center">
+                        <i data-lucide="terminal" class="w-4 h-4 mr-2 text-amber-400"></i>Sysmon & Agent Live Stream
+                    </h3>
+                    <span class="text-[11px] text-slate-500 font-mono">Real-Time</span>
+                </div>
+                <div id="telemetry-feed" class="space-y-2 overflow-y-auto max-h-[220px] pr-1">
+                    <div class="text-xs text-slate-500 text-center py-8">Waiting for telemetry stream...</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Lower Section: Correlated Alerts Feed Table & SOAR Audit Log -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            
+            <!-- Left 3 Columns: Alerts Table -->
+            <div class="lg:col-span-3 glass-panel rounded-xl p-5 flex flex-col">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <h3 class="font-semibold text-base text-slate-100 flex items-center">
+                            <i data-lucide="list-filter" class="w-5 h-5 mr-2 text-blue-400"></i>Correlated Security Alerts & Forensic Actions
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Click an alert row to inspect Root Cause Analysis, Process Tree, Timeline, and raw log JSON</p>
+                    </div>
+
+                    <!-- Severity Filter Tabs -->
+                    <div class="flex items-center space-x-1.5 bg-slate-900/80 p-1 rounded-lg border border-slate-800 text-xs">
+                        <button data-severity="ALL" class="filter-btn px-3 py-1 rounded-md bg-blue-600 text-white font-medium transition-colors">ALL</button>
+                        <button data-severity="CRITICAL" class="filter-btn px-3 py-1 rounded-md bg-slate-800 text-slate-400 hover:text-white transition-colors">CRITICAL</button>
+                        <button data-severity="HIGH" class="filter-btn px-3 py-1 rounded-md bg-slate-800 text-slate-400 hover:text-white transition-colors">HIGH</button>
+                        <button data-severity="MEDIUM" class="filter-btn px-3 py-1 rounded-md bg-slate-800 text-slate-400 hover:text-white transition-colors">MEDIUM</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto rounded-lg border border-slate-800/80">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-900/90 text-[11px] font-semibold text-slate-400 uppercase tracking-wider border-b border-slate-800">
+                                <th class="px-4 py-3">Timestamp</th>
+                                <th class="px-4 py-3">Severity</th>
+                                <th class="px-4 py-3">Rule / Title</th>
+                                <th class="px-4 py-3">Host</th>
+                                <th class="px-4 py-3">Process Tree (Parent ➔ Child)</th>
+                                <th class="px-4 py-3 text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="alerts-tbody" class="divide-y divide-slate-800/60 text-xs">
+                            <tr>
+                                <td colspan="6" class="px-4 py-8 text-center text-slate-500">Loading alerts from AegisXDR Core...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Right 1 Column: SOAR Automation Log -->
+            <div class="glass-panel rounded-xl p-5 flex flex-col">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-sm text-slate-200 flex items-center">
+                        <i data-lucide="shield-check" class="w-4 h-4 mr-2 text-emerald-400"></i>SOAR Mitigation Log
+                    </h3>
+                    <span class="text-[10px] text-emerald-400 font-mono">Audit Trail</span>
+                </div>
+                <div id="soar-audit-feed" class="space-y-2.5 overflow-y-auto max-h-[380px] pr-1">
+                    <div class="text-xs text-slate-500 text-center py-8">No SOAR mitigation actions recorded yet.</div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Modal 1: Alert Detail, Root Cause Analysis & Timeline Modal -->
+    <div id="alert-detail-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-slate-700 bg-slate-950 w-full max-w-4xl rounded-xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-900/60">
+                <div class="flex items-center space-x-2">
+                    <i data-lucide="file-search" class="w-5 h-5 text-cyan-400"></i>
+                    <h3 id="modal-alert-title" class="font-bold text-slate-100 text-sm">Alert Root Cause & Forensic Timeline</h3>
+                </div>
+                <button onclick="closeDetailModal()" class="text-slate-400 hover:text-white text-lg font-bold px-2">&times;</button>
+            </div>
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 text-xs">
+                
+                <!-- Root Cause Summary Box -->
+                <div class="p-4 rounded-lg bg-slate-900 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-cyan-400 uppercase text-[11px] tracking-wider flex items-center">
+                        <i data-lucide="git-branch" class="w-4 h-4 mr-1.5"></i>Root Cause Analysis (Kök Neden)
+                    </h4>
+                    <p id="modal-root-cause-text" class="text-slate-300">Loading analysis...</p>
+                </div>
+
+                <!-- Process Tree Visualizer -->
+                <div class="p-4 rounded-lg bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-amber-400 uppercase text-[11px] tracking-wider flex items-center">
+                        <i data-lucide="network" class="w-4 h-4 mr-1.5"></i>Process Tree Hierarchy (Süreç Ağacı)
+                    </h4>
+                    <div id="modal-process-tree" class="font-mono text-xs text-slate-300 p-3 bg-black/50 rounded border border-slate-800 space-y-1">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- 5-Minute Timeline View -->
+                <div class="p-4 rounded-lg bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-blue-400 uppercase text-[11px] tracking-wider flex items-center">
+                        <i data-lucide="clock" class="w-4 h-4 mr-1.5"></i>Incident Timeline (± 5 Minutes Activity Flow)
+                    </h4>
+                    <div id="modal-timeline-list" class="space-y-1.5 max-h-48 overflow-y-auto pr-1 font-mono text-[11px]">
+                        <!-- Rendered via JS -->
+                    </div>
+                </div>
+
+                <!-- Raw JSON / XML Log View -->
+                <div class="p-4 rounded-lg bg-slate-900/80 border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-slate-400 uppercase text-[11px] tracking-wider flex items-center">
+                        <i data-lucide="code" class="w-4 h-4 mr-1.5"></i>Raw JSON Telemetry Payload
+                    </h4>
+                    <pre id="modal-raw-json" class="p-3 bg-slate-950 text-emerald-400 font-mono text-[11px] rounded overflow-x-auto max-h-40 border border-slate-800">
+                    </pre>
+                </div>
+
+            </div>
+            <div class="p-4 border-t border-slate-800 bg-slate-900/40 flex justify-end">
+                <button onclick="closeDetailModal()" class="px-4 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded text-xs">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: Secondary Action Confirmation Modal (İkincil Onay Penceresi) -->
+    <div id="action-confirm-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="glass-panel border border-red-700/60 bg-slate-950 w-full max-w-md rounded-xl shadow-2xl overflow-hidden p-6 space-y-4">
+            <div class="flex items-center space-x-3 text-red-400">
+                <i data-lucide="alert-triangle" class="w-7 h-7"></i>
+                <h3 id="confirm-modal-title" class="font-bold text-white text-base">SOAR Action Confirmation</h3>
+            </div>
+            <p id="confirm-modal-desc" class="text-xs text-slate-300 leading-relaxed">
+                Are you sure you want to execute this disruptive response action? This will be audited and logged in the SOAR database.
+            </p>
+            <div class="flex justify-end space-x-3 pt-2">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs">Cancel</button>
+                <button id="btn-modal-confirm-action" class="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-semibold rounded text-xs flex items-center shadow-lg shadow-red-600/20">
+                    <i data-lucide="shield-check" class="w-4 h-4 mr-1"></i>Confirm Action
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-800/60 bg-slate-950/60 py-3 px-6 text-xs text-slate-500 flex items-center justify-between">
+        <div>AegisXDR Enterprise Threat Platform © 2026. Production Security Rights Reserved.</div>
+        <div class="flex items-center space-x-4">
+            <span class="hover:text-slate-400 cursor-pointer">SIGMA Rules: Active</span>
+            <span class="hover:text-slate-400 cursor-pointer">False Positive Engine: Active</span>
+            <span class="hover:text-slate-400 cursor-pointer">Risk Scoring: Dynamic</span>
+        </div>
+    </footer>
+
+    <!-- Initialize Lucide Icons -->
+    <script>
+        lucide.createIcons();
+    </script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

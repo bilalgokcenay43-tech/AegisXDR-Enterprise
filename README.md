@@ -144,3 +144,11 @@ python agent/collector.py --simulate-attack
 3. **SOAR Mitigation**:
    - Automatically executes host isolation and process termination when `HIGH` or `CRITICAL` threats are triggered.
    - Logs all automated and manual SOAR actions for compliance and auditing.
+  
+   - ## ⚖️ Disclaimer / Yasal Uyarı
+
+> **ENGLISH:**
+> This tool is developed strictly for **educational, research, and authorized security auditing / defensive (Blue Team) purposes only**. The developer assumes no liability and is not responsible for any misuse, damage, or legal consequences caused by this program. Any unauthorized testing or execution on systems without prior written consent is strictly prohibited.
+
+> **TÜRKÇE:**
+> Bu araç **yalnızca eğitim, araştırma, yetkili güvenlik testleri ve savunma (Mavi Takım) amaçlarıyla** geliştirilmiştir. Geliştirici, bu yazılımın uygunsuz kullanımından, sistemlerde oluşturabileceği zararlardan veya doğabileceği yasal sonuçlardan sorumlu tutulamaz. Önceden yazılı izin alınmamış sistemlerde yetkisiz olarak kullanılması kesinlikle yasaktır.
